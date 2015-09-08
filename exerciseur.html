@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+  <script src="./cookies.js"></script>
 </head>
 <body>
 <div class="container">
@@ -114,8 +115,10 @@
 <script type="text/javascript">
 
   // Définion des variables par défaut
-	// Prénom
+  // Prénom
   prenom="NOT SET";
+
+
   // number of question per line (fixed in order to have a nice display using 4 column bootstrap)
   var numberOfQuestionPerLine = 4;
 
@@ -128,6 +131,13 @@
   // numbers to exclude from one side of the questions
   var exclude =  [2, 10] ;
   
+
+  // If we have already used the application, we have some cookies available ;-)
+  // Let's use them and populate the default values of our variables
+  // And of the forms
+  
+  prenom = docCookies.getItem("prenom","/");
+  document.getElementById("prenom").value = prenom;
 
   // Show the active tab (Paremeters)
 $(document).ready(function(){
@@ -159,6 +169,7 @@ $('#Soummettre').on('click', function (e) {
 
   // Assign form values from the form to the variables
     prenom=document.getElementById("prenom").value;
+    docCookies.setItem("prenom",prenom,31536e3,"/");
     operation=document.getElementById("operation").value;
     numberOfQuestion=document.getElementById("nbOperations").value;
     max=document.getElementById("max").value;
