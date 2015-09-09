@@ -167,7 +167,7 @@ $('#Soummettre').on('click', function (e) {
   pageParametre="<div class=\"container\">"; 
 
 
-  // Assign form values from the form to the variables
+    // Assign form values from the form to the variables
     prenom=document.getElementById("prenom").value;
     docCookies.setItem("prenom",prenom,31536e3,"/");
     operation=document.getElementById("operation").value;
@@ -179,8 +179,8 @@ $('#Soummettre').on('click', function (e) {
     document.getElementById("titreHTML").innerHTML = operation +" pour "+ prenom;
     
      maxNumbers = max - min - exclude.length;
-//  If maxNumbers*maxNumbers<numberOfQuestion : ABORT ! IMPOSSIBLE !
-  if (maxNumbers*maxNumbers<numberOfQuestion){
+    //  If maxNumbers*maxNumbers<numberOfQuestion : ABORT ! IMPOSSIBLE !
+    if (maxNumbers*maxNumbers<numberOfQuestion){
     alert('Impossible de générer autant d\'exercices avec les limites choisies !');
     // pageQuestion+="<div class=\"alert alert-danger fade in\">";
     // pageQuestion+="<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>";
