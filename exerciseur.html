@@ -19,7 +19,7 @@
 </ul>
 <div class="container">
 <div class="jumbotron">
-<h1 id="titrePage"> </h1>
+<h1 id="titrePage"> Exerciseur </h1>
 </div>
 
 <div class="tab-content">
@@ -61,8 +61,8 @@
   <label class="col-md-6 control-label" for="selectbasic">Opération</label>
   <div class="col-md-6">
     <select id="operation" name="operation" class="form-control">
-      <option value="addition">Addition</option>
-      <option value="multiplication">Multiplication</option>
+      <option value="Addition">Addition</option>
+      <option value="Multiplication">Multiplication</option>
     </select>
   </div>
 </div>
@@ -146,13 +146,13 @@ $(document).ready(function(){
     });
 });
 
-  // operation : choix parmis addition, multiplication
+  // operation : choix parmis Addition, Multiplication
   // TODO : soustraction et division
   // Soustraction : contrainte en plus, x doit être plus grand que y (option)
   // Division : contrainte en plus, x/y doit être un entier (option)
-  //var operation="multiplication";
+  //var operation="Multiplication";
   var operation="NOT SET";
-  //var operation="addition";
+  //var operation="Addition";
   var pageQuestion; 
   var pageReponse; 
   var pageParametre; 
@@ -259,11 +259,11 @@ $('#Soummettre').on('click', function (e) {
 
         // Management of the various operations    
         switch (operation) {
-          case "addition":
+          case "Addition":
             stringToAdd=x+'+'+y;
             computedResult=x+y;
             break;
-          case "multiplication":
+          case "Multiplication":
             stringToAdd=x+"x"+y;
             computedResult=x*y;
             break;
