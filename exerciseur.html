@@ -71,23 +71,43 @@
 <div class="form-group">
   <label class="col-md-6 control-label" for="nbOperations">Combien d'exercices à produire ?</label>  
   <div class="col-md-6">
-  <input id="nbOperations" name="nbOperations" type="text" value="20" class="form-control input-md">
+  <input id="nbOperations" name="nbOperations" type="text" value="20" class="form-control bfh-number" data-min="1" data-wrap="true">
   <span class="help-block">Combien d'opérations seront générées ?</span>  
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-6 control-label" for="max">Nombre maximal</label>  
+  <label class="col-md-6 control-label" for="minNumberForXY">Nombre minimal pour les X et Y</label>  
   <div class="col-md-6">
-  <input id="max" name="max" type="text" value="12" class="form-control input-md">
-  <span class="help-block">Jusqu'à quel nombre aller (12 par défaut)</span>  
+  <input id="minNumberForXY" name="minNumberForXY" type="text" value="1" class="form-control bfh-number" data-min="0">
+  <span class="help-block">Nombre minimal pour les X et les Y</span>  
+  </div>
+</div>
+
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-6 control-label" for="maxNumberForX">Nombre maximal pour les X</label>  
+  <div class="col-md-6">
+  <input id="maxNumberForX" name="max" type="text" value="12" class="form-control  bfh-number" data-min="0">
+  <span class="help-block">Jusqu'à quel nombre aller pour les X(12 par défaut)</span>  
+  </div>
+</div>
+
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-6 control-label" for="maxNumberForY">Nombre maximal pour les Y</label>  
+  <div class="col-md-6">
+  <input id="maxNumberForY" name="max" type="text" value="12" class="form-control  bfh-number" data-min="0">
+  <span class="help-block">Jusqu'à quel nombre aller pour les Y(12 par défaut)</span>  
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-6 control-label" for="exclus">Quels nombres exclure ?</label>  
+  <label class="col-md-6 control-label" for="exclus">Liste de nombre à exclureQuels nombres exclure ?</label>  
   <div class="col-md-6">
   <input id="exclus" name="exclus" type="text" value="2,10" class="form-control input-md">
   <span class="help-block">Les nombres "trop faciles" à exclure (2 et 10 par défaut)</span>  
@@ -122,10 +142,12 @@
   // number of question per line (fixed in order to have a nice display using 4 column bootstrap)
   var numberOfQuestionPerLine = 4;
 
-  // Minimal number for the questions
-  var min = 2 ;
-  // Maximal number for the questions
-  var max =23;
+  // Minimal number for the generated numbers (X & Y)
+  var minNumberForXY = 0 ;
+  // Maximal number for the questions (X)
+  var maxNumberForX =23;
+  // Maximal number for the questions (Y)
+  var maxNumberForY =23;
   // Number of question to ask
   var numberOfQuestion = 0;
   // numbers to exclude from one side of the questions
@@ -169,19 +191,27 @@ $('#Soummettre').on('click', function (e) {
 
     // Assign form values from the form to the variables
     prenom=document.getElementById("prenom").value;
+    // Conserve the lastname in a cookie
     docCookies.setItem("prenom",prenom,31536e3,"/");
     operation=document.getElementById("operation").value;
-    numberOfQuestion=document.getElementById("nbOperations").value;
-    max=document.getElementById("max").value;
-    exclude=document.getElementById("exclus").value;
+    numberOfQuestion=parseInt(document.getElementById("nbOperations").value);
+    maxNumberForX=parseInt(document.getElementById("maxNumberForX").value);
+    maxNumberForY=parseInt(document.getElementById("maxNumberForY").value);
+    minNumberForXY=parseInt(document.getElementById("minNumberForXY").value);
+    exclude=document.getElementById("exclus").value.split(",");
+    // Convert all the strings to integers
+    for (index =0;index<exclude.length;index++ ){
+      exclude[index] = parseInt(exclude[index]);  
+    }
     pageParametre+=prenom;
     document.getElementById("titrePage").innerHTML = operation +" pour "+ prenom;
     document.getElementById("titreHTML").innerHTML = operation +" pour "+ prenom;
     
-     maxNumbers = max - min - exclude.length;
+    possibilityForX = maxNumberForX - minNumberForXY - exclude.length + 1;
+    possibilityForY = maxNumberForY - minNumberForXY - exclude.length + 1;
     //  If maxNumbers*maxNumbers<numberOfQuestion : ABORT ! IMPOSSIBLE !
-    if (maxNumbers*maxNumbers<numberOfQuestion){
-    alert('Impossible de générer autant d\'exercices avec les limites choisies !');
+    if (possibilityForX*possibilityForY < numberOfQuestion){
+    alert('Impossible de générer autant d\'exercices avec les limites choisies ! Augmentez le nombre d\'exercices');
     // pageQuestion+="<div class=\"alert alert-danger fade in\">";
     // pageQuestion+="<a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>";
     // pageQuestion+="<strong>Erreur!</strong> Impossible de générer autant d'exercices avec les limites choisies !";
@@ -210,15 +240,29 @@ $('#Soummettre').on('click', function (e) {
   function buildParameterPage(){
     
   }
+  function checkExclusion(number,exclusions){
+    ex=0;
+    for (index=0;index<exclusions.length;index++){
+      if (number == exclusions[index]) ex=1;
+    }
+    return ex;
+  }
 
   function randomInteger(iMin,iMax){
+    iMin=parseInt(iMin);
+    iMax=parseInt(iMax);
   	randomInt=Math.random();
   	randomInt=randomInt*(iMax-iMin);
-  	randomInt=iMin+Math.round(randomInt);
-  	for (index =0;index<exclude.length;index++ ){
-  		if (randomInt == exclude[index]) randomInteger(iMin,iMax);	
-  	}
+    randomInt=Math.ceil(randomInt);
   	return randomInt;
+  }
+
+  function randomIntegerWithExclusion(iMin,iMax,exclusions){
+    iMin=parseInt(iMin);
+    iMax=parseInt(iMax);
+    var number =randomInteger(iMin,iMax);
+    while (checkExclusion(number,exclusions) == 1) number=randomInteger(iMin,iMax);
+    return number;
   }
 
   function buildQuestionAndAnswerPage(){
@@ -243,15 +287,18 @@ $('#Soummettre').on('click', function (e) {
 
       // Secondary loop : columns
     	for (var j=0;j<numberOfQuestionPerLine;j++){
-        x = randomInteger(min,max);
-        y = randomInteger(min,max); 
+        x = randomIntegerWithExclusion(minNumberForXY,maxNumberForX,exclude);
+        y = randomIntegerWithExclusion(minNumberForXY,maxNumberForY,exclude); 
         // Search for (x,y) or (y,x) in the already ask question
         // If a match is found, generate another (x,y) until success
         // FIXME : Can cause infinite loop when number of questions > max number of questions
+        var avoidInfinitLoop=0;
         while (questionArray.indexOf(x+"et"+y)>0 || questionArray.indexOf(y+"et"+x)>0){
           retryArray.push(x+"et"+y+" ou "+y+"et"+x);
-          x = randomInteger(min,max);
-          y = randomInteger(min,max); 
+          x = randomIntegerWithExclusion(minNumberForXY,maxNumberForX,exclude);
+          y = randomIntegerWithExclusion(minNumberForXY,maxNumberForY,exclude); 
+          avoidInfinitLoop++;
+          if (avoidInfinitLoop>50) break;
         }
 
         // Add the new question to the question array
@@ -273,8 +320,8 @@ $('#Soummettre').on('click', function (e) {
   			pageReponse += "<div class=\"col-sm-3\"><h3>"  +stringToAdd+"= <mark>" + computedResult +"</mark></h3></div>";
   		}
       // Debug
-      //pageReponse+="</div>"+questionArray.toString();
-      //pageReponse+="</div>"+retryArray.toString();
+      pageReponse+="</div>"+questionArray.toString();
+      pageReponse+="</div>"+retryArray.toString();
       // Normal
   		pageReponse+="</div>";
   		pageQuestion+="</div>";
