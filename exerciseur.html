@@ -214,10 +214,18 @@ $('#Soummettre').on('click', function (e) {
     maxNumberForY=parseInt(document.getElementById("maxNumberForY").value);
     minNumberForXY=parseInt(document.getElementById("minNumberForXY").value);
     exclude=document.getElementById("exclus").value.split(",");
-    // Convert all the strings to integers
-    for (index =0;index<exclude.length;index++ ){
-      exclude[index] = parseInt(exclude[index]);  
+    // If empty : the first element is ""
+    if (exclude[0] == ""){
+       // Set exclude as an empty array so that everything works fine after that
+     exclude=[];
     }
+    else { 
+    	// Let's convert each string to an integer
+    	for (index =0;index<exclude.length;index++ ){
+      		exclude[index] = parseInt(exclude[index]);  
+    	}
+    }
+    
     pageParametre+=prenom;
     document.getElementById("titrePage").innerHTML = operation +" pour "+ prenom;
     document.getElementById("titreHTML").innerHTML = operation +" pour "+ prenom;
@@ -255,6 +263,11 @@ $('#Soummettre').on('click', function (e) {
   function buildParameterPage(){
     
   }
+
+  function isEmpty(str) {
+    return (!str || 0 === str.length);
+  }
+
   function checkExclusion(number,exclusions){
     ex=0;
     for (index=0;index<exclusions.length;index++){
