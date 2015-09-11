@@ -208,21 +208,21 @@ $('#Soummettre').on('click', function (e) {
     // Conserve the lastname in a cookie
     docCookies.setItem("prenom",prenom,31536e3,"/");
     operation=document.getElementById("operation").value;
-    numberOfQuestion=parseInt(document.getElementById("nbOperations").value);
-    maxNumberForX=parseInt(document.getElementById("maxNumberForX").value);
-    duplicate=parseInt(document.getElementById("duplicate").value);
-    maxNumberForY=parseInt(document.getElementById("maxNumberForY").value);
-    minNumberForXY=parseInt(document.getElementById("minNumberForXY").value);
+    numberOfQuestion=parseInt(document.getElementById("nbOperations").value,10);
+    maxNumberForX=parseInt(document.getElementById("maxNumberForX").value,10);
+    duplicate=parseInt(document.getElementById("duplicate").value,10);
+    maxNumberForY=parseInt(document.getElementById("maxNumberForY").value,10);
+    minNumberForXY=parseInt(document.getElementById("minNumberForXY").value,10);
     exclude=document.getElementById("exclus").value.split(",");
     // If empty : the first element is ""
-    if (exclude[0] == ""){
+    if (exclude[0] === ""){
        // Set exclude as an empty array so that everything works fine after that
      exclude=[];
     }
     else { 
     	// Let's convert each string to an integer
     	for (index =0;index<exclude.length;index++ ){
-      		exclude[index] = parseInt(exclude[index]);  
+      		exclude[index] = parseInt(exclude[index],10);  
     	}
     }
     
@@ -269,16 +269,18 @@ $('#Soummettre').on('click', function (e) {
   }
 
   function checkExclusion(number,exclusions){
-    ex=0;
-    for (index=0;index<exclusions.length;index++){
-      if (number == exclusions[index]) ex=1;
+    var ex=0;
+    for (var index=0;index<exclusions.length;index++){
+      if (number == exclusions[index]) {
+        ex=1;
+      }
     }
     return ex;
   }
 
   function randomInteger(iMin,iMax){
-    iMin=parseInt(iMin);
-    iMax=parseInt(iMax);
+    iMin=parseInt(iMin,10);
+    iMax=parseInt(iMax,10);
   	randomInt=Math.random();
   	randomInt=randomInt*(iMax-iMin);
     randomInt=Math.ceil(randomInt);
@@ -286,10 +288,12 @@ $('#Soummettre').on('click', function (e) {
   }
 
   function randomIntegerWithExclusion(iMin,iMax,exclusions){
-    iMin=parseInt(iMin);
-    iMax=parseInt(iMax);
+    iMin=parseInt(iMin,10);
+    iMax=parseInt(iMax,10);
     var number =randomInteger(iMin,iMax);
-    while (checkExclusion(number,exclusions) == 1) number=randomInteger(iMin,iMax);
+    while (checkExclusion(number,exclusions) == 1) {
+      number=randomInteger(iMin,iMax);
+    }
     return number;
   }
 
@@ -327,7 +331,9 @@ $('#Soummettre').on('click', function (e) {
             x = randomIntegerWithExclusion(minNumberForXY,maxNumberForX,exclude);
             y = randomIntegerWithExclusion(minNumberForXY,maxNumberForY,exclude); 
             avoidInfinitLoop++;
-            if (avoidInfinitLoop>50) break;
+            if (avoidInfinitLoop>50) {
+              break;
+            }
           }
         }
 
@@ -343,6 +349,8 @@ $('#Soummettre').on('click', function (e) {
           case "Multiplication":
             stringToAdd=x+"x"+y;
             computedResult=x*y;
+            break;
+          default:
             break;
         }
         // Generate the HTML to display the question & answer
